@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator, Field
 class Types(str, Enum):
     task = "task"
     issue = "issue"
-    bug = "bug" 
+    bug = "bug"
 
 
 class TrelloType(BaseModel):
@@ -57,4 +57,3 @@ class Ids(BaseModel):
 
 class MemberLists(BaseModel):  # type: ignore
     items: List[Ids]
-

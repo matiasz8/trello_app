@@ -2,8 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.router import api_router
-from core.config import (APP_NAME, APP_VERSION, IS_DEBUG)
+from app.api.router import api_router
+from app.core.config import (APP_NAME, APP_VERSION, IS_DEBUG)
 
 
 app_config = {'title': APP_NAME,
@@ -22,12 +22,10 @@ def start_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    # fast_app.add_exception_handler(HTTPCustomException, exception_handler)
-    # fast_app.add_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, fatal_exception_handler)
     return fast_app
 
 
 app = start_app()
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
+    uvicorn.run('app.main:app', host='0.0.0.0', port=8000, reload=True)

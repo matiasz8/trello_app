@@ -2,21 +2,21 @@ import logging
 
 from pydantic import ValidationError
 
-from models.trello import TaskCard
-from services.trello_service import service_trello
+from app.models.trello import TaskCard
+from app.services.trello_service import service_trello
 
 logger = logging.getLogger(__name__)
 
 
 class TaskService():
     """Service who handle Task data."""
-    
+
     @classmethod
     def publish_task(cls, payload: dict) -> str:
-        """A task: 
+        """A task:
             This represents some manual work that needs to be done.
             It will count with just a title and a category (Maintenance, Research, or Test)
-            Each corresponding to a label in trello. 
+            Each corresponding to a label in trello.
         """
         try:
             result = TaskCard(**dict(payload))
@@ -27,4 +27,3 @@ class TaskService():
             category=result.category
         )
         return card
-

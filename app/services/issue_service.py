@@ -1,9 +1,10 @@
 import logging
 
 from pydantic import ValidationError
-from models.trello import IssueCard
 
-from services.trello_service import service_trello
+from app.models.trello import IssueCard
+from app.services.trello_service import service_trello
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class IssueService:
     def publish_issue(cls, payload: dict) -> str:
         """Issue method handle.
 
-           An issue: 
+           An issue:
            This represents a business feature that needs implementation,
            they will provide a short title and a description.
            All issues gets added to the “To Do” list as unassigned
@@ -30,4 +31,3 @@ class IssueService:
             description=result.description
         )
         return card
-

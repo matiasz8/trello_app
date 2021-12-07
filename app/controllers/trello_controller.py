@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status, Depends
 
-from models.trello import TrelloCard
-from services.task_service import TaskService as service_task
-from services.bug_service import BugService as service_bug
-from services.issue_service import IssueService as service_issue
+from app.models.trello import TrelloCard
+from app.services.task_service import TaskService as service_task
+from app.services.bug_service import BugService as service_bug
+from app.services.issue_service import IssueService as service_issue
 
 
 router = APIRouter()

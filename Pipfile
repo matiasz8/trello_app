@@ -9,6 +9,8 @@ uvicorn = "*"
 trello = "*"
 random-word = "*"
 pyyaml = "*"
+pytest = "*"
+pre-commit = "*"
 
 [dev-packages]
 

@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/matt/.local/share/virtualenvs/fastapi-poc-aTGaOTVG/bin/python"
+    "python.pythonPath": "/home/matt/.local/share/virtualenvs/fastapi-poc-aTGaOTVG/bin/python",
+    "python.linting.pylintPath": "/home/matt/.local/share/virtualenvs/fastapi-poc-aTGaOTVG/bin/pylint"
 }

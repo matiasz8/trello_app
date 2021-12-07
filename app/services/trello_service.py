@@ -5,8 +5,7 @@ import json
 from pydantic import ValidationError
 from trello import TrelloApi
 
-
-from core.config import (
+from app.core.config import (
     TRELLO_APP_KEY,
     TRELLO_APP_TOKEN,
     TRELLO_DEFAULT_BOARD,
@@ -14,7 +13,7 @@ from core.config import (
     TRELLO_BASE_URL,
     TRELLO_DEFAULT_LABELS
 )
-from models.trello import TrelloLists, MemberLists
+from app.models.trello import TrelloLists, MemberLists
 
 
 logger = logging.getLogger(__name__)
@@ -40,7 +39,7 @@ class TrelloService:
             f"{TRELLO_BASE_URL}/members/me/boards?",
             params={
                 "key": TRELLO_APP_KEY,
-                "token": TRELLO_APP_TOKEN, 
+                "token": TRELLO_APP_TOKEN,
                 "fields": ["name"]})
         return self.raise_or_json(resp)
 
@@ -76,7 +75,7 @@ class TrelloService:
             f"{TRELLO_BASE_URL}/boards/{self.board_key}/lists?",
             params={
                 "key": TRELLO_APP_KEY,
-                "token": TRELLO_APP_TOKEN, 
+                "token": TRELLO_APP_TOKEN,
                 "fields": ["name"]
             }
         )
@@ -115,7 +114,7 @@ class TrelloService:
             f"{TRELLO_BASE_URL}/boards/{self.board_key}/labels",
             params={
                 "key": TRELLO_APP_KEY,
-                "token": TRELLO_APP_TOKEN, 
+                "token": TRELLO_APP_TOKEN,
                 "fields": ["name"]})
         return self.raise_or_json(resp)
 
@@ -165,7 +164,7 @@ class TrelloService:
             f"{TRELLO_BASE_URL}/boards/{self.board_key}/members",
             params={
                 "key": TRELLO_APP_KEY,
-                "token": TRELLO_APP_TOKEN, 
+                "token": TRELLO_APP_TOKEN,
                 "fields": ["id"]})
         return self.raise_or_json(resp)
 
@@ -195,7 +194,7 @@ class TrelloService:
             f"{TRELLO_BASE_URL}/cards",
             params={
                 "key": TRELLO_APP_KEY,
-                "token": TRELLO_APP_TOKEN, 
+                "token": TRELLO_APP_TOKEN,
                 "idList": self.list_key,
                 "idMembers": assing_member
             },
