@@ -42,11 +42,11 @@ class TaskCard(TrelloType):  # type: ignore
         return val
 
 
-class Board(BaseModel):
+class Item(BaseModel):
     id: str
     name: str
 
 
-class BoardList(BaseModel):  # type: ignore
-    boards: List[Board]
+class Board_And_List(BaseModel):  # type: ignore
+    items: List[Item]
 

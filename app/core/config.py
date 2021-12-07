@@ -17,5 +17,6 @@ ENV: str = _config("ENV", cast=str, default="")
 
 TRELLO_APP_KEY: str = _config("TRELLO_APP_KEY", cast=str, default="")
 TRELLO_APP_TOKEN: str = _config("TRELLO_APP_TOKEN", cast=str, default="")
-TRELLO_DEFAULT_BOARD: str = _config("TRELLO_DEFAULT_BOARD", cast=str, default="TrelloTasks")
-TRELLO_BASE_URL: str = _config("TRELLO_BASE_URL", cast=str, default="https://api.trello.com/1/")
+TRELLO_DEFAULT_BOARD: str = _config("TRELLO_DEFAULT_BOARD", cast=str, default="Tasks")
+TRELLO_DEFAULT_LIST: str = _config("TRELLO_DEFAULT_LIST", cast=str, default="To do")
+TRELLO_BASE_URL: str = _config("TRELLO_BASE_URL", cast=str, default="https://api.trello.com/1")
