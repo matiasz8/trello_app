@@ -1,4 +1,5 @@
 import requests
+import json
 
 from pydantic import ValidationError
 from trello import TrelloApi
@@ -30,14 +31,21 @@ class TrelloService:
                 "key": TRELLO_APP_KEY,
                 "token": TRELLO_APP_TOKEN, 
                 "fields": ["name"]})
-        try:
-            boards = BoardList(boards=resp)
-        except ValidationError as val_err:
-            return val_err.errors()
-        return boards
+        if resp.status_code == 200:
+            try:
+                resp = json.loads(resp.text)
+                boards = BoardList(boards=resp)
+            except ValidationError as val_err:
+                return val_err.errors()
+            return boards
+        else:
+            raise ConnectionError(resp.text)
 
     def get_board_by_default_name(self):
-        board_list = self.get_boards()
+        try:
+            board_list = self.get_boards()
+        except ConnectionError as conn_err:
+            raise conn_err
 
         # case I: empty list
         if not board_list:
@@ -52,13 +60,11 @@ class TrelloService:
         return self.create_board()
 
     def create_board(self, board_name=TRELLO_DEFAULT_BOARD):
-        resp = requests.post(
-            f"{TRELLO_BASE_URL}boards/",
-            params={
-                "key": TRELLO_APP_KEY,
-                "token": TRELLO_APP_TOKEN, 
-                "name": board_name
-            }
-        )
-        board_id = response.json()["shortUrl"].split("/")[-1].strip()
-        return board_id
+        resp = self.__client.boards.new(name=board_name)
+        return resp.id
+
+    def create_card(self, card_name, idList=1):
+        resp = self.__client.cards.new(name=card_name,idList=idList)
+        return resp
+
+service_trello = TrelloService()
