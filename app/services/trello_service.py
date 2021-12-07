@@ -1,3 +1,4 @@
+import logging
 import requests
 import json
 
@@ -13,7 +14,10 @@ from core.config import (
     TRELLO_BASE_URL,
     TRELLO_DEFAULT_LABELS
 )
-from models.trello import TrelloLists
+from models.trello import TrelloLists, MemberLists
+
+
+logger = logging.getLogger(__name__)
 
 
 class TrelloService:
@@ -90,7 +94,6 @@ class TrelloService:
 
         # case I: empty list
         if not lists:
-            print("no hay listas")
             return self.create_list()
 
         # case II: key could be in the list
@@ -156,7 +159,35 @@ class TrelloService:
         }
         return data[category]
 
-    def create_card(self, card_name, category=None, description=None):
+    def get_members(self):
+        """Get all members"""
+        resp = requests.get(
+            f"{TRELLO_BASE_URL}/boards/{self.board_key}/members",
+            params={
+                "key": TRELLO_APP_KEY,
+                "token": TRELLO_APP_TOKEN, 
+                "fields": ["id"]})
+        return self.raise_or_json(resp)
+
+    def get_member_for_list(self):
+        try:
+            resp = self.get_members()
+        except ConnectionError as conn_err:
+            raise conn_err
+        try:
+            members = MemberLists(items=resp)
+        except ValidationError as val_err:
+            logger.info(val_err.errors())
+            return None
+
+        # case I: empty list
+        if not members:
+            return None
+
+        for value in members.items:
+            return value.id
+
+    def create_card(self, card_name, category=None, description=None, assing_member=None):
         if category:
             category = self.get_labels_ids(category)
 
@@ -165,7 +196,8 @@ class TrelloService:
             params={
                 "key": TRELLO_APP_KEY,
                 "token": TRELLO_APP_TOKEN, 
-                "idList": self.list_key
+                "idList": self.list_key,
+                "idMembers": assing_member
             },
             json={
                 "name": card_name,

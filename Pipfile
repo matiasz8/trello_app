@@ -7,6 +7,8 @@ name = "pypi"
 fastapi = "*"
 uvicorn = "*"
 trello = "*"
+random-word = "*"
+pyyaml = "*"
 
 [dev-packages]
 

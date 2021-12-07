@@ -3,14 +3,13 @@ import logging
 from pydantic import ValidationError
 from models.trello import IssueCard
 
+from services.trello_service import service_trello
 
 logger = logging.getLogger(__name__)
 
 
 class IssueService:
     """Service who handle Issue data."""
-
-    default_msg = "Validation rejected."
 
     @classmethod
     def publish_issue(cls, payload: dict) -> str:
@@ -23,8 +22,12 @@ class IssueService:
         """
         try:
             result = IssueCard(**dict(payload))
-            
         except (ValidationError, Exception) as e:
             result = e.errors()
-        return result
+
+        card = service_trello.create_card(
+            card_name=result.title,
+            description=result.description
+        )
+        return card
 

@@ -10,8 +10,6 @@ logger = logging.getLogger(__name__)
 
 class TaskService():
     """Service who handle Task data."""
-
-    default_msg = "Validation rejected."
     
     @classmethod
     def publish_task(cls, payload: dict) -> str:
@@ -24,7 +22,6 @@ class TaskService():
             result = TaskCard(**dict(payload))
         except (ValidationError, Exception) as e:
             result = e.errors()
-        # return result
         card = service_trello.create_card(
             card_name=result.title,
             category=result.category

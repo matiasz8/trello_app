@@ -50,3 +50,11 @@ class Item(BaseModel):
 class TrelloLists(BaseModel):  # type: ignore
     items: List[Item]
 
+
+class Ids(BaseModel):
+    id: str
+
+
+class MemberLists(BaseModel):  # type: ignore
+    items: List[Ids]
+
