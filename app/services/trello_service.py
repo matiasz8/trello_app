@@ -10,9 +10,10 @@ from core.config import (
     TRELLO_APP_TOKEN,
     TRELLO_DEFAULT_BOARD,
     TRELLO_DEFAULT_LIST,
-    TRELLO_BASE_URL
+    TRELLO_BASE_URL,
+    TRELLO_DEFAULT_LABELS
 )
-from models.trello import Board_And_List
+from models.trello import TrelloLists
 
 
 class TrelloService:
@@ -20,6 +21,10 @@ class TrelloService:
         self.__client = TrelloApi(TRELLO_APP_KEY, TRELLO_APP_TOKEN)
         self.board_key = self.get_or_create_board()
         self.list_key = self.get_or_create_list()
+        self.label_maintenance = self.get_or_create_label("Maintenance")
+        self.label_research = self.get_or_create_label("Research")
+        self.label_test = self.get_or_create_label("Test")
+        self.label_bug = self.get_or_create_label("Bug")
 
     def raise_or_json(self, resp):
         resp.raise_for_status()
@@ -41,7 +46,7 @@ class TrelloService:
         except ConnectionError as conn_err:
             raise conn_err
         try:
-            board_list = Board_And_List(items=resp)
+            board_list = TrelloLists(items=resp)
         except ValidationError as val_err:
             raise val_err.errors()
 
@@ -79,7 +84,7 @@ class TrelloService:
         except ConnectionError as conn_err:
             raise conn_err
         try:
-            lists = Board_And_List(items=resp)
+            lists = TrelloLists(items=resp)
         except ValidationError as val_err:
             raise val_err.errors()
 
@@ -101,15 +106,74 @@ class TrelloService:
         resp = self.__client.lists.new(name=list_name, idBoard=self.board_key)
         return resp["id"]
 
-    def create_card(self, card_name, category=None, description=None):
-        resp = self.__client.cards.new(
-            name=card_name,
-            idList=self.list_key,
-            idLabels=category,
-            desc=description,
+    def get_labels(self):
+        """Get all labels"""
+        resp = requests.get(
+            f"{TRELLO_BASE_URL}/boards/{self.board_key}/labels",
+            params={
+                "key": TRELLO_APP_KEY,
+                "token": TRELLO_APP_TOKEN, 
+                "fields": ["name"]})
+        return self.raise_or_json(resp)
+
+    def get_or_create_label(self, category: str):
+        try:
+            resp = self.get_labels()
+        except ConnectionError as conn_err:
+            raise conn_err
+        try:
+            label_list = TrelloLists(items=resp)
+        except ValidationError as val_err:
+            raise val_err.errors()
+
+        # case I: empty list
+        if not label_list:
+            return self.create_label(category)
+
+        # case II: key could be in the list
+        for value in label_list.items:
+            if value.name == category:
+                return value.id
+
+        # case III: key not be in the list
+        return self.create_label(category)
+
+    def create_label(self, label):
+        label_color = TRELLO_DEFAULT_LABELS[label]["color"]
+        resp = self.__client.labels.new(
+            name=label,
+            color=label_color,
+            idBoard=self.board_key
         )
-        if resp.status_code == 400:
-            print(resp.text)
-        return resp
+        return resp["id"]
+
+    def get_labels_ids(self, category):
+        data = {
+            "Bug": self.label_bug,
+            "Test": self.label_test,
+            "Research": self.label_research,
+            "Maintenance": self.label_maintenance
+        }
+        return data[category]
+
+    def create_card(self, card_name, category=None, description=None):
+        if category:
+            category = self.get_labels_ids(category)
+
+        resp = requests.post(
+            f"{TRELLO_BASE_URL}/cards",
+            params={
+                "key": TRELLO_APP_KEY,
+                "token": TRELLO_APP_TOKEN, 
+                "idList": self.list_key
+            },
+            json={
+                "name": card_name,
+                "desc": description,
+                "idLabels": category
+            }
+        )
+        return self.raise_or_json(resp)
+
 
 service_trello = TrelloService()

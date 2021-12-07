@@ -47,6 +47,6 @@ class Item(BaseModel):
     name: str
 
 
-class Board_And_List(BaseModel):  # type: ignore
+class TrelloLists(BaseModel):  # type: ignore
     items: List[Item]
 

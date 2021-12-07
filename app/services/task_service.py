@@ -25,7 +25,9 @@ class TaskService():
         except (ValidationError, Exception) as e:
             result = e.errors()
         # return result
-        card = service_trello.create_card(card_name=result.title, category=result.category)
-
+        card = service_trello.create_card(
+            card_name=result.title,
+            category=result.category
+        )
         return card
 
