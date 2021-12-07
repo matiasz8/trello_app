@@ -11,6 +11,7 @@ random-word = "*"
 pyyaml = "*"
 pytest = "*"
 pre-commit = "*"
+responses = "*"
 
 [dev-packages]
 
