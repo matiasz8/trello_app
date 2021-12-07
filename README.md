@@ -7,6 +7,10 @@ At the begining, install dependencies:
 
     $ pip install pipenv
     $ pipenv install
+    
+And then, activate the venv:
+
+    $ pipenv shell
 
 Ensure that your *PYTHONPATH* is being set:
 
