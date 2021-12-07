@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List
 from enum import Enum
+
+from typing import Optional, List
+from pydantic import BaseModel, validator, Field
 
 
 class Types(str, Enum):
@@ -31,6 +32,14 @@ class BugCard(TrelloType):  # type: ignore
 class TaskCard(TrelloType):  # type: ignore
     title: str = Field(..., max_length=40, min_length=4)
     category: str = Field(..., max_length=20, min_length=4)
+
+    @validator("category")  # type: ignore
+    @classmethod
+    def check_category(cls, val: str) -> str:
+        val = val.capitalize()
+        categories = ["Maintenance", "Research", "Test"]
+        assert val in categories, f"Category [{val}] not found. Try with: {categories}"
+        return val
 
 
 class Board(BaseModel):
