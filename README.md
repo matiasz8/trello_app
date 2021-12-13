@@ -20,9 +20,12 @@ Ensure that your *PYTHONPATH* is being set:
 
 Create an .env file on project root, and add this keys:
 
+    (fake credentials)
     TRELLO_APP_KEY="xcvxgxd5g5d54xdg45xdg5454xdg54"
     TRELLO_APP_TOKEN="54sef54sef454s5ef54a45ef45aef546s"
-
+    
+    To get your token and api key, please, check the following link:
+    https://trello.com/app-key
 
 
 # Start up
